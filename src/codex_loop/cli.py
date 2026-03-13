@@ -38,7 +38,7 @@ def build_parser() -> argparse.ArgumentParser:
     inspect_parser = subparsers.add_parser("inspect", help="Print detected repository scenario as JSON.")
     inspect_parser.add_argument("--repo", default=".", help="Repository path.")
 
-    plan_parser = subparsers.add_parser("plan-docs", help="Prepare base requirements docs and launch interactive Codex.")
+    plan_parser = subparsers.add_parser("draft", help="Generate the base requirements document and launch interactive Codex.")
     _add_repo_args(plan_parser)
     plan_parser.add_argument("scenario", nargs="?", choices=["existing-code", "auto"], default="auto")
     plan_parser.add_argument("--requirements-doc", help="Path to the original user requirements document.")
@@ -49,7 +49,7 @@ def build_parser() -> argparse.ArgumentParser:
     plan_parser.add_argument("--no-search", action="store_true", help="Disable web search during interactive planning.")
     plan_parser.add_argument("--force", action="store_true", help="Overwrite generated files if they already exist.")
 
-    init_parser = subparsers.add_parser("init", help="Generate relay docs and runtime config, then launch interactive Codex.")
+    init_parser = subparsers.add_parser("prepare", help="Generate relay docs and runtime config, then launch interactive Codex.")
     _add_repo_args(init_parser)
     init_parser.add_argument("--requirements-doc", help="Path to the finalized base requirements document.")
     init_parser.add_argument("--ai-doc-language", default=None, help="Output language for generated documents.")
@@ -85,7 +85,7 @@ def main(argv: list[str] | None = None) -> int:
         print(json.dumps(payload.__dict__, indent=2, ensure_ascii=False))
         return 0
 
-    if args.command == "plan-docs":
+    if args.command == "draft":
         repo = Path(args.repo).resolve()
         scenario = detect_scenario(repo) if args.scenario == "auto" else args.scenario
         doc_language = resolve_language(args.ai_doc_language or cli_language)
@@ -109,7 +109,7 @@ def main(argv: list[str] | None = None) -> int:
         print(json.dumps(_scaffold_payload(repo, result), indent=2, ensure_ascii=False))
         return exit_code
 
-    if args.command == "init":
+    if args.command == "prepare":
         repo = Path(args.repo).resolve()
         scenario = detect_scenario(repo)
         doc_language = resolve_language(args.ai_doc_language or cli_language)
@@ -192,16 +192,16 @@ def _expand_interactive_argv(argv: list[str] | None) -> list[str]:
     messages = get_messages(cli_language)
     print(messages.interactive_title)
     print(f"{messages.using_current_repo}: {repo}")
-    command = choose_option(messages.choose_command, ["inspect", "plan-docs", "init", "run"], language=cli_language)
+    command = choose_option(messages.choose_command, ["inspect", "draft", "prepare", "run"], language=cli_language)
     if command == "inspect":
         return ["--language", cli_language, "inspect", "--repo", repo]
-    if command == "plan-docs":
+    if command == "draft":
         scenario = choose_option("Scenario", ["auto", "existing-code"], language=cli_language)
         requirements_doc = prompt_text("Requirements doc", "")
         ai_language = prompt_text(messages.prompt_language, cli_language)
         use_search = prompt_bool("Enable web search", True, language=cli_language)
         force = prompt_bool("Overwrite existing generated files", False, language=cli_language)
-        args = ["--language", cli_language, "plan-docs", scenario, "--repo", repo, "--ai-doc-language", ai_language]
+        args = ["--language", cli_language, "draft", scenario, "--repo", repo, "--ai-doc-language", ai_language]
         if requirements_doc:
             args.extend(["--requirements-doc", requirements_doc])
         if not use_search:
@@ -209,7 +209,7 @@ def _expand_interactive_argv(argv: list[str] | None) -> list[str]:
         if force:
             args.append("--force")
         return args
-    if command == "init":
+    if command == "prepare":
         requirements_doc = prompt_text("Requirements doc", "")
         ai_language = prompt_text(messages.prompt_language, cli_language)
         sandbox_mode = choose_option("Sandbox mode", ["read-only", "workspace-write", "danger-full-access"], default_index=1, language=cli_language)
@@ -220,7 +220,7 @@ def _expand_interactive_argv(argv: list[str] | None) -> list[str]:
         args = [
             "--language",
             cli_language,
-            "init",
+            "prepare",
             "--repo",
             repo,
             "--ai-doc-language",

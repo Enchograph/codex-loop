@@ -1,16 +1,17 @@
 # Codex Loop
 
-Codex Loop is a simple command-line project for running fully automated Codex relay development.
+Codex Loop is a Python CLI project for running fully automated Codex relay development.
 
 The project is divided into three parts:
 
-1. Optionally generate a "base requirements document" for an existing repository. Or let AI help refine the detailed project requirements document you wrote yourself. We recommend directly using your detailed project requirements document for step two. The quality of this document determines the final runtime quality.
+1. Optionally generate a "base requirements document" for an existing repository, or let AI help refine the detailed project requirements document you wrote yourself.
+   We recommend directly using your detailed project requirements document for step two. The quality of this document determines the final runtime quality.
 2. Generate the document set from the "base requirements document", so Codex sessions can continue development seamlessly across multiple relay rounds.
 3. Run unattended fully automated `codex exec` development loops based on that document set.
 
-If you only need an automatic loop script suitable for Codex, see `codex-loop-minimal/`.
+If you only need an automatic loop script suitable for Codex, see `codex-loop-minimal/`, or run `codex-loop run` directly and choose `Use loop script only`.
 
-The tool targets Python 3.11+ and supports Windows, macOS, and Linux.
+The project supports Windows, macOS, Linux, and similar systems, and requires Python 3.11 or above.
 
 ## Install
 
@@ -20,7 +21,7 @@ python -m pip install -e .
 
 ## Commands
 
-Running `codex-loop` directly enters light interactive mode, lets the user choose the language first, then choose command parameters one by one, and uses the current terminal directory as the repository by default.
+Running `codex-loop` directly uses the current terminal directory as the repository by default, and lets the user choose command parameters one by one.
 
 ```bash
 cd /path/to/repo
@@ -29,7 +30,7 @@ codex-loop
 
 You can also explicitly specify the repository path with `--repo`.
 
-### Optional step 1, "base requirements document" generation: `plan-docs`
+### Step 1 (optional): generate / refine the "base requirements document"
 
 Used to generate the "base requirements document" for an existing code repository. It can also refine a user-provided document into the "base requirements document".
 
@@ -38,20 +39,18 @@ We more strongly recommend writing a detailed "base requirements document" yours
 #### Generate the document from scratch for an existing code repository:
 
 ```bash
-cd /path/to/repo
-codex-loop plan-docs
+codex-loop draft
 ```
 
-An empty repository should not run this command.
+This command should not be run inside an empty repository.
 
 #### Refine a user-provided document:
 
 ```bash
-cd /path/to/repo
-codex-loop plan-docs --requirements-doc /path/to/original-user-doc.md
+codex-loop draft --requirements-doc /path/to/original-user-doc.md
 ```
 
-### Step 2, document set generation: `init`
+### Step 2: document set generation
 
 Step 2: generate the development rules that Codex sessions should follow from the "base requirements document".
 
@@ -63,22 +62,19 @@ or explicitly specify the "base requirements document" path through `--requireme
 #### `USER-REQUIREMENTS.md` (the "base requirements document") already exists:
 
 ```bash
-cd /path/to/repo
-codex-loop init
+codex-loop prepare
 ```
 
 #### Explicitly specify the "base requirements document" path:
 
 ```bash
-cd /path/to/repo
-codex-loop init --requirements-doc /path/to/user-requirements.md
+codex-loop prepare --requirements-doc /path/to/user-requirements.md
 ```
 
-### Step 3, fully automated loop execution: `run`
+### Step 3, automatic loop execution
 
 Start multi-round automatic `codex exec` development loops from the generated `.codex-loop/config/codex-loop.json`.
 
 ```bash
-cd /path/to/repo
 codex-loop run
 ```
