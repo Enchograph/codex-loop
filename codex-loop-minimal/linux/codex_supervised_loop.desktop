@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Codex Supervised Loop
+Comment=Run supervised Codex exec rounds from JSON config
+Exec=gnome-terminal -- bash -lc 'cd "/path/to/codex-loop-minimal/linux" && ./codex_supervised_loop.sh; echo; read -n 1 -s -r -p "Press any key to close..."'
+Path=/path/to/codex-loop-minimal/linux
+Terminal=false
+Icon=utilities-terminal
+Categories=Development;

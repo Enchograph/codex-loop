@@ -7,6 +7,7 @@
 - `codex-loop-docs/zh-CN/`: Chinese mirror docs
 - `codex-loop-docs/project/`: canonical project-doc workflow assets and planning scaffolds
 - `codex-loop-docs/requirements/`: original user source documents
-- `codex_supervised_loop.sh`: legacy shell implementation kept as a compatibility reference
-- `codex_supervised_loop.json`: legacy example config
-- `codex_supervised_loop.desktop`: legacy desktop launcher example
+- `codex-loop-minimal/`: minimal loop runner variant
+- `codex-loop-minimal/linux/`: Linux launch scripts and example config
+- `codex-loop-minimal/macos/`: macOS launch scripts and example config
+- `codex-loop-minimal/windows/`: Windows launch scripts and example config

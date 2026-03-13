@@ -17,14 +17,13 @@ This folder is for users who only want the fixed-prompt automatic conversation l
 
 ## Supported Platforms
 
-- Linux: `codex_supervised_loop.sh`
-- macOS: `codex_supervised_loop_macos.command`
-- Windows PowerShell: `codex_supervised_loop.ps1`
-- Windows Command Prompt: `codex_supervised_loop.bat`
+- Linux: `linux/`
+- macOS: `macos/`
+- Windows: `windows/`
 
 ## Configuration
 
-The default config file is `codex_supervised_loop.json`.
+Each platform folder includes its own `codex_supervised_loop.json`.
 
 Important fields:
 
@@ -55,7 +54,7 @@ The scripts support the current Codex CLI runtime permission model:
 ### Linux
 
 ```bash
-SCRIPT_DIR="/path/to/codex-loop-minimal"
+SCRIPT_DIR="/path/to/codex-loop-minimal/linux"
 cd "$SCRIPT_DIR"
 chmod +x ./codex_supervised_loop.sh
 ./codex_supervised_loop.sh
@@ -64,7 +63,7 @@ chmod +x ./codex_supervised_loop.sh
 ### macOS
 
 ```bash
-SCRIPT_DIR="/path/to/codex-loop-minimal"
+SCRIPT_DIR="/path/to/codex-loop-minimal/macos"
 cd "$SCRIPT_DIR"
 chmod +x ./codex_supervised_loop_macos.command ./codex_supervised_loop.sh
 ./codex_supervised_loop_macos.command
@@ -73,7 +72,7 @@ chmod +x ./codex_supervised_loop_macos.command ./codex_supervised_loop.sh
 ### Windows PowerShell
 
 ```powershell
-$ScriptDir = "D:\path\to\codex-loop-minimal"
+$ScriptDir = "D:\path\to\codex-loop-minimal\windows"
 Set-Location $ScriptDir
 .\codex_supervised_loop.ps1
 ```
@@ -81,18 +80,22 @@ Set-Location $ScriptDir
 ### Windows Command Prompt
 
 ```bat
-set SCRIPT_DIR=D:\path\to\codex-loop-minimal
+set SCRIPT_DIR=D:\path\to\codex-loop-minimal\windows
 cd /d %SCRIPT_DIR%
 codex_supervised_loop.bat
 ```
 
 ## Included Files
 
-- `codex_supervised_loop.sh`: Linux-compatible loop runner
-- `codex_supervised_loop_macos.command`: macOS launcher
-- `codex_supervised_loop.ps1`: Windows PowerShell runner
-- `codex_supervised_loop.bat`: Windows batch launcher
-- `codex_supervised_loop.desktop`: Linux desktop launcher example
-- `codex_supervised_loop.json`: minimal example config
+- `linux/codex_supervised_loop.sh`: Linux-compatible loop runner
+- `linux/codex_supervised_loop.desktop`: Linux desktop launcher example
+- `linux/codex_supervised_loop.json`: Linux example config
+- `macos/codex_supervised_loop_macos.command`: macOS launcher
+- `macos/codex_supervised_loop.sh`: shell runner used on macOS
+- `macos/codex_supervised_loop.json`: macOS example config
+- `windows/codex_supervised_loop.ps1`: Windows PowerShell runner
+- `windows/codex_supervised_loop.bat`: Windows batch launcher
+- `windows/codex_supervised_loop.json`: Windows example config
 - `codex-loop.example.json`: alternate example config
+- `codex-loop.json`: alternate example config
 - `Codex-接力开发文档编写指南.md`: reference methodology document

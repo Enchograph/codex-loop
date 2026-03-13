@@ -1,7 +1,7 @@
 {
   "codex_bin": "codex",
-  "workdir": "/home/anon/文档/GitHub/Overview-Uno",
-  "prompt": "阅读/home/anon/文档/GitHub/Overview-Uno/docs/AI-MASTER-PROMPT.md，严格按照其要求接手之前的成果继续完整开发",
+  "workdir": "D:\\path\\to\\example-project",
+  "prompt": "Read D:\\path\\to\\example-project\\docs\\AI-MASTER-PROMPT.md and continue the project strictly according to it.",
   "total_timeout_minutes": 300,
   "skip_git_repo_check": false,
   "sandbox_mode": "danger-full-access",

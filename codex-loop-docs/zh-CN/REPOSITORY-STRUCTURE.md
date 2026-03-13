@@ -7,6 +7,7 @@
 - `codex-loop-docs/zh-CN/`：中文镜像文档
 - `codex-loop-docs/project/`：canonical 项目文档工作流与计划模式辅助文件
 - `codex-loop-docs/requirements/`：用户原始来源文档
-- `codex_supervised_loop.sh`：保留的旧 shell 实现，作为兼容参考
-- `codex_supervised_loop.json`：旧示例配置
-- `codex_supervised_loop.desktop`：旧桌面启动器示例
+- `codex-loop-minimal/`：最小版循环执行器
+- `codex-loop-minimal/linux/`：Linux 启动脚本与示例配置
+- `codex-loop-minimal/macos/`：macOS 启动脚本与示例配置
+- `codex-loop-minimal/windows/`：Windows 启动脚本与示例配置

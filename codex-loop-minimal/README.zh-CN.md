@@ -17,14 +17,13 @@ Codex Loop Minimal 是 Codex 循环执行器的最小版本。
 
 ## 支持平台
 
-- Linux：`codex_supervised_loop.sh`
-- macOS：`codex_supervised_loop_macos.command`
-- Windows PowerShell：`codex_supervised_loop.ps1`
-- Windows 命令提示符：`codex_supervised_loop.bat`
+- Linux：`linux/`
+- macOS：`macos/`
+- Windows：`windows/`
 
 ## 配置
 
-默认配置文件为 `codex_supervised_loop.json`。
+每个系统文件夹内都带有自己的 `codex_supervised_loop.json`。
 
 关键字段：
 
@@ -55,7 +54,7 @@ Codex Loop Minimal 是 Codex 循环执行器的最小版本。
 ### Linux
 
 ```bash
-SCRIPT_DIR="/path/to/codex-loop-minimal"
+SCRIPT_DIR="/path/to/codex-loop-minimal/linux"
 cd "$SCRIPT_DIR"
 chmod +x ./codex_supervised_loop.sh
 ./codex_supervised_loop.sh
@@ -64,7 +63,7 @@ chmod +x ./codex_supervised_loop.sh
 ### macOS
 
 ```bash
-SCRIPT_DIR="/path/to/codex-loop-minimal"
+SCRIPT_DIR="/path/to/codex-loop-minimal/macos"
 cd "$SCRIPT_DIR"
 chmod +x ./codex_supervised_loop_macos.command ./codex_supervised_loop.sh
 ./codex_supervised_loop_macos.command
@@ -73,7 +72,7 @@ chmod +x ./codex_supervised_loop_macos.command ./codex_supervised_loop.sh
 ### Windows PowerShell
 
 ```powershell
-$ScriptDir = "D:\path\to\codex-loop-minimal"
+$ScriptDir = "D:\path\to\codex-loop-minimal\windows"
 Set-Location $ScriptDir
 .\codex_supervised_loop.ps1
 ```
@@ -81,18 +80,19 @@ Set-Location $ScriptDir
 ### Windows 命令提示符
 
 ```bat
-set SCRIPT_DIR=D:\path\to\codex-loop-minimal
+set SCRIPT_DIR=D:\path\to\codex-loop-minimal\windows
 cd /d %SCRIPT_DIR%
 codex_supervised_loop.bat
 ```
 
 ## 包含文件
 
-- `codex_supervised_loop.sh`：兼容 Linux 的循环执行脚本
-- `codex_supervised_loop_macos.command`：macOS 启动器
-- `codex_supervised_loop.ps1`：Windows PowerShell 执行脚本
-- `codex_supervised_loop.bat`：Windows batch 启动器
-- `codex_supervised_loop.desktop`：Linux 桌面启动器示例
-- `codex_supervised_loop.json`：最小版示例配置
-- `codex-loop.example.json`：另一份示例配置
-- `Codex-接力开发文档编写指南.md`：参考方法论文档
+- `linux/codex_supervised_loop.sh`：兼容 Linux 的循环执行脚本
+- `linux/codex_supervised_loop.desktop`：Linux 桌面启动器示例
+- `linux/codex_supervised_loop.json`：Linux 示例配置
+- `macos/codex_supervised_loop_macos.command`：macOS 启动器
+- `macos/codex_supervised_loop.sh`：macOS 使用的 shell 执行脚本
+- `macos/codex_supervised_loop.json`：macOS 示例配置
+- `windows/codex_supervised_loop.ps1`：Windows PowerShell 执行脚本
+- `windows/codex_supervised_loop.bat`：Windows batch 启动器
+- `windows/codex_supervised_loop.json`：Windows 示例配置
