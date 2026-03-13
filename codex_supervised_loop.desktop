@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Codex Supervised Loop
+Comment=Run supervised Codex exec rounds from JSON config
+Exec=gnome-terminal -- bash -lc 'cd "/home/anon/桌面/codex脚本" && ./codex_supervised_loop.sh; echo; read -n 1 -s -r -p "Press any key to close..."'
+Path=/home/anon/桌面/codex脚本
+Terminal=false
+Icon=utilities-terminal
+Categories=Development;
