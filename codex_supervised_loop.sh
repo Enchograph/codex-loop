@@ -7,6 +7,21 @@ trap 'echo "Script failed at line $LINENO." >&2' ERR
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONFIG_FILE="$SCRIPT_DIR/codex_supervised_loop.json"
 CONFIG_JSON=""
+CURRENT_CHILD_PID=""
+STOP_REQUESTED=0
+
+request_stop() {
+  STOP_REQUESTED=1
+  echo
+  echo "Stop requested. Terminating current round..."
+  if [[ -n "$CURRENT_CHILD_PID" ]]; then
+    kill -INT "$CURRENT_CHILD_PID" 2>/dev/null || true
+    sleep 1
+    kill -TERM "$CURRENT_CHILD_PID" 2>/dev/null || true
+  fi
+}
+
+trap request_stop INT TERM
 
 require_cmd() {
   if ! command -v "$1" >/dev/null 2>&1; then
@@ -144,6 +159,11 @@ echo "Log dir: $LOG_DIR"
 echo
 
 while true; do
+  if (( STOP_REQUESTED != 0 )); then
+    echo "Stopped."
+    exit 130
+  fi
+
   NOW_TS="$(date +%s)"
   REMAINING_TOTAL="$((DEADLINE_TS - NOW_TS))"
   if (( REMAINING_TOTAL <= 0 )); then
@@ -169,11 +189,17 @@ while true; do
     -o "$FINAL_MSG_LOG" \
     "$PROMPT" \
     > >(tee "$STDOUT_LOG") \
-    2> >(tee "$STDERR_LOG" >&2)
+    2> >(tee "$STDERR_LOG" >&2) &
+  CURRENT_CHILD_PID=$!
+  wait "$CURRENT_CHILD_PID"
   EXIT_CODE=$?
+  CURRENT_CHILD_PID=""
   set -e
 
   case "$EXIT_CODE" in
+    130)
+      echo "Round $ROUND interrupted."
+      ;;
     0)
       echo "Round $ROUND finished successfully."
       ;;
@@ -184,6 +210,11 @@ while true; do
       echo "Round $ROUND exited with code $EXIT_CODE."
       ;;
   esac
+
+  if (( STOP_REQUESTED != 0 )); then
+    echo "Stopped."
+    exit 130
+  fi
 
   if [[ -s "$FINAL_MSG_LOG" ]]; then
     echo
