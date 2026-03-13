@@ -167,7 +167,7 @@ while true; do
   NOW_TS="$(date +%s)"
   REMAINING_TOTAL="$((DEADLINE_TS - NOW_TS))"
   if (( REMAINING_TOTAL <= 0 )); then
-    echo "Total timeout reached. Exiting."
+    echo "Total timeout reached before starting a new round. Exiting."
     exit 0
   fi
 
@@ -183,8 +183,7 @@ while true; do
   echo "Logs: $ROUND_LOG_DIR"
 
   set +e
-  timeout --foreground "${REMAINING_TOTAL}s" \
-    "$CODEX_BIN" exec \
+  "$CODEX_BIN" exec \
     "${CODEX_ARGS[@]}" \
     -o "$FINAL_MSG_LOG" \
     "$PROMPT" \
@@ -226,7 +225,7 @@ while true; do
   NOW_TS="$(date +%s)"
   REMAINING_TOTAL="$((DEADLINE_TS - NOW_TS))"
   if (( REMAINING_TOTAL <= 0 )); then
-    echo "Total timeout reached. Exiting."
+    echo "Total timeout reached. Current round finished, exiting."
     exit 0
   fi
 
