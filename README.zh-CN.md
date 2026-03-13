@@ -8,8 +8,8 @@ Codex Loop 是一份简单的脚本项目，旨在为 Codex 提供全自动循�
 
 项目分三部分：
 
-1. （如果需要的话）根据用户需求 AI 生成一份基底项目需求文档
-2. 根据前一步生成的，或用户自行添加的基底项目需求文档生成一系列完整的文档组，供后续的复数个空白 Codex 会话无缝接续接力开发。（推荐用户自行提供基底项目需求文档）
+1. （如果需要的话）由 AI 分析现有仓库内容，生成基底项目需求文档。经与用户的反复问答以确保 Codex 没有误解用户与代码意图。用户亦可以自行提供 基底项目需求文档。我们推荐后者。
+2. 根据前一步生成的，或用户自行添加的 基底项目需求文档，经过 AI 分析疏漏歧义之处，与用户反复问答，确认方案详细完备后，生成一系列完整的文档组，供后续的复数个空白 Codex 会话无缝接续接力开发。
 3. 自动化脚本， 在 Codex 完成一项任务后开启新会话自动开始下一部分任务，以达到无人值守全自动循环开发的效果。提供语言、 Codex 权限、循环时间等参数设置。
 
 项目支持从零开始的空项目开发，与已有代码的中途项目开发。
@@ -21,32 +21,25 @@ Codex Loop 是一份简单的脚本项目，旨在为 Codex 提供全自动循�
 ### 安装
 
 ```bash
-python -m pip install -e .[dev]
 ```
 
 ### 基底项目需求文档生成（可选）
 
 
-为已有代码仓库 AI 生成一份基底项目文档：
+Codex 先分析当前代码仓库，与用户反复问答以确定用户/代码实际真实意图，随后 生成基底项目文档：
 
 ```bash
-PROJECT_DIR="/path/to/repo"
-ORIGINAL_USER_DOC="/path/to/original-user-doc.md"
-
-codex-loop plan-docs --repo "$PROJECT_DIR" --requirements-doc "$ORIGINAL_USER_DOC"
 ```
 
 ### 根据 用户基底项目需求文档 生成 AI 开发文档组
+
+ AI 会在此阶段与用户反复问答以达到生成文档组无歧义疏漏的程度。
 
 #### 空项目
 
 空项目必须由用户提供 用户基底文档 。
 
 ```bash
-PROJECT_DIR="/path/to/repo"
-BASE_REQUIREMENTS_DOC="/path/to/requirements.md"
-
-codex-loop init blank --repo "$PROJECT_DIR" --requirements-doc "$BASE_REQUIREMENTS_DOC"
 ```
 
 #### 已有项目
@@ -54,11 +47,6 @@ codex-loop init blank --repo "$PROJECT_DIR" --requirements-doc "$BASE_REQUIREMEN
 ##### 若有 用户原始需求文档 提供
 
 ```bash
-PROJECT_DIR="/path/to/repo"
-ORIGINAL_USER_DOC="/path/to/original-user-doc.md"
-
-codex-loop plan-docs --repo "$PROJECT_DIR" --requirements-doc "$ORIGINAL_USER_DOC"
-codex-loop init existing-code --repo "$PROJECT_DIR" --ai-doc-language zh-CN
 ```
 
 ##### 若无 用户基底文档 提供
@@ -66,13 +54,7 @@ codex-loop init existing-code --repo "$PROJECT_DIR" --ai-doc-language zh-CN
 经由第一步 AI 生成 用户基底项目需求文档 后，基于此文档生成 AI 开发文档组
 
 ```bash
-PROJECT_DIR="/path/to/repo"
-
-codex-loop init existing-code --repo "$PROJECT_DIR" --ai-doc-language zh-CN
 ```
-
-#### 已有项目，有 用户原始需求文档 提供
-
 
 
 ### Codex 自动化脚本启动
@@ -82,22 +64,9 @@ codex-loop init existing-code --repo "$PROJECT_DIR" --ai-doc-language zh-CN
 > 建议的方式是在空虚拟机里赋予 Codex 无需请求的权限，以实现全自动不中断开发。
 
 ```bash
-PROJECT_DIR="/path/to/repo"
-CONFIG_PATH="$PROJECT_DIR/codex-loop.json"
-
-codex-loop run --config "$CONFIG_PATH"
-codex-loop run --config "$CONFIG_PATH" --sandbox-mode danger-full-access --approval-policy never
 ```
 
 ## 如果只是需要自动循环功能……
 
 如果你只是想要 Codex 固定提示词自动开对话循环功能，请参阅 /codex-loop-minimal 文件夹。
 
-
-## 项目文档
-
-- [其他说明文档](codex-loop-docs/zh-CN/OTHER-SPECIFIED-DOCUMENTS.md)
-- [使用指南](codex-loop-docs/zh-CN/USAGE.md)
-- [仓库结构](codex-loop-docs/zh-CN/REPOSITORY-STRUCTURE.md)
-- [方法论](codex-loop-docs/zh-CN/METHODOLOGY.md)
-- [贡献说明](codex-loop-docs/zh-CN/CONTRIBUTING.md)
