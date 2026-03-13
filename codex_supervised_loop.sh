@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+trap 'echo "Script failed at line $LINENO." >&2' ERR
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONFIG_FILE="$SCRIPT_DIR/codex_supervised_loop.json"
 CONFIG_JSON=""
@@ -73,6 +75,7 @@ APPROVAL_POLICY="$(json_get_string '.approval_policy')"
 SEARCH_ENABLED="$(json_get_bool '.search_enabled')"
 PROFILE_RAW="$(json_get_raw '.profile')"
 MODEL_RAW="$(json_get_raw '.model')"
+
 if ! command -v "$CODEX_BIN" >/dev/null 2>&1; then
   echo "Codex binary not found: $CODEX_BIN" >&2
   exit 1
@@ -179,7 +182,6 @@ while true; do
     echo "Total timeout reached. Exiting."
     exit 0
   fi
-
 
   ROUND="$((ROUND + 1))"
   echo
