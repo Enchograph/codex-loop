@@ -1,0 +1,19 @@
+[build-system]
+requires = ["hatchling>=1.27.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "codex-loop"
+version = "0.1.0"
+description = "Cross-platform tooling for Codex relay documentation and supervised development loops."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Proprietary" }
+authors = [{ name = "Codex Loop Contributors" }]
+dependencies = []
+
+[project.scripts]
+codex-loop = "codex_loop.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/codex_loop"]
