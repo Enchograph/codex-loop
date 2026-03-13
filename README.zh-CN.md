@@ -8,8 +8,8 @@ Codex Loop 是一份简单的脚本项目，旨在为 Codex 提供全自动循�
 
 项目分三部分：
 
-1. （如果需要的话）根据用户需求生成一份基底项目需求文档
-2. 根据前一步生成的或用户自行添加的基底项目需求文档生成一系列完整的文档组，供后续的复数个空白 Codex 会话无缝接续接力开发。
+1. （如果需要的话）根据用户需求 AI 生成一份基底项目需求文档
+2. 根据前一步生成的，或用户自行添加的基底项目需求文档生成一系列完整的文档组，供后续的复数个空白 Codex 会话无缝接续接力开发。（推荐用户自行提供基底项目需求文档）
 3. 自动化脚本， 在 Codex 完成一项任务后开启新会话自动开始下一部分任务，以达到无人值守全自动循环开发的效果。提供语言、 Codex 权限、循环时间等参数设置。
 
 项目支持从零开始的空项目开发，与已有代码的中途项目开发。
@@ -27,7 +27,7 @@ python -m pip install -e .[dev]
 ### 基底项目需求文档生成（可选）
 
 
-为已有代码仓库先准备基底项目文档：
+为已有代码仓库 AI 生成一份基底项目文档：
 
 ```bash
 PROJECT_DIR="/path/to/repo"
@@ -38,7 +38,9 @@ codex-loop plan-docs --repo "$PROJECT_DIR" --requirements-doc "$ORIGINAL_USER_DO
 
 ### 根据 用户基底项目需求文档 生成 AI 开发文档组
 
-#### 空项目，有 用户基底文档 提供
+#### 空项目
+
+空项目必须由用户提供 用户基底文档 。
 
 ```bash
 PROJECT_DIR="/path/to/repo"
@@ -47,9 +49,21 @@ BASE_REQUIREMENTS_DOC="/path/to/requirements.md"
 codex-loop init blank --repo "$PROJECT_DIR" --requirements-doc "$BASE_REQUIREMENTS_DOC"
 ```
 
-#### 已有项目，无 用户基底文档 提供
+#### 已有项目
 
-经由上一步生成 用户基底项目需求文档 后，基于此文档生成 AI 开发文档组
+##### 若有 用户原始需求文档 提供
+
+```bash
+PROJECT_DIR="/path/to/repo"
+ORIGINAL_USER_DOC="/path/to/original-user-doc.md"
+
+codex-loop plan-docs --repo "$PROJECT_DIR" --requirements-doc "$ORIGINAL_USER_DOC"
+codex-loop init existing-code --repo "$PROJECT_DIR" --ai-doc-language zh-CN
+```
+
+##### 若无 用户基底文档 提供
+
+经由第一步 AI 生成 用户基底项目需求文档 后，基于此文档生成 AI 开发文档组
 
 ```bash
 PROJECT_DIR="/path/to/repo"
@@ -59,13 +73,7 @@ codex-loop init existing-code --repo "$PROJECT_DIR" --ai-doc-language zh-CN
 
 #### 已有项目，有 用户原始需求文档 提供
 
-```bash
-PROJECT_DIR="/path/to/repo"
-ORIGINAL_USER_DOC="/path/to/original-user-doc.md"
 
-codex-loop plan-docs --repo "$PROJECT_DIR" --requirements-doc "$ORIGINAL_USER_DOC"
-codex-loop init existing-code --repo "$PROJECT_DIR" --ai-doc-language zh-CN
-```
 
 ### Codex 自动化脚本启动
 
