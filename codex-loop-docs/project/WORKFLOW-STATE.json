@@ -1,0 +1,7 @@
+{
+  "stage": "relay_docs_generated",
+  "ai_docs_language": "en",
+  "canonical_project_doc": "codex-loop-docs/project/PROJECT-BRIEF.md",
+  "original_requirements_doc": "codex-loop-docs/requirements/USER-REQUIREMENTS.md",
+  "user_project_input_doc": "codex-loop-docs/project/USER-PROVIDED-PROJECT-DOC.md"
+}
