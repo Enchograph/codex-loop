@@ -13,8 +13,8 @@ Codex Loop 刻意拆成带门禁的几个阶段：
 
 ## Canonical 项目文档规则
 
-- 如果用户已有自己的项目文档，应优先提供。
-- 用户提供的项目文档只是输入来源。
+- 用户输入文档只有一个，就是原始需求文档。
+- 它在整个流程中始终保留，并且是最高优先级的需求来源。
 - 正式文档生成和自动执行的直接基底，是 canonical 项目文档。
 - 自动执行时，AI 每轮开始都仍然必须回读用户原始文档。
 
@@ -26,15 +26,12 @@ Codex Loop 刻意拆成带门禁的几个阶段：
 
 ```bash
 codex-loop plan-docs --repo /path/to/repo --requirements-doc /path/to/original-user-doc.md
-codex-loop plan-docs --repo /path/to/repo --input-doc /path/to/existing-project-doc.md
-codex-loop plan-docs --repo /path/to/repo --requirements-doc /path/to/original-user-doc.md --input-doc /path/to/existing-project-doc.md
 codex-loop plan-docs --repo /path/to/repo --ai-doc-language zh-CN
 ```
 
 行为：
 
 - 如果提供了用户原始文档，则复制到 `codex-loop-docs/requirements/USER-REQUIREMENTS.md`
-- 如果提供了用户项目文档，则复制到 `codex-loop-docs/project/USER-PROVIDED-PROJECT-DOC.md`
 - 生成 `codex-loop-docs/project/PROJECT-BRIEF.md` 作为 canonical 项目文档脚手架
 - 生成进入 Plan Mode 追问澄清所需的提示和辅助文件
 - 不会启动实现或自动执行

@@ -30,7 +30,6 @@ SUPPORTED_SANDBOX_MODES = {"read-only", "workspace-write", "danger-full-access"}
 SUPPORTED_APPROVAL_POLICIES = {"never", "on-failure", "on-request", "untrusted"}
 
 ORIGINAL_REQUIREMENTS_PATH = REQUIREMENTS_DOCS_DIR / "USER-REQUIREMENTS.md"
-USER_PROJECT_INPUT_PATH = PROJECT_DOCS_DIR / "USER-PROVIDED-PROJECT-DOC.md"
 CANONICAL_PROJECT_DOC_PATH = PROJECT_DOCS_DIR / "PROJECT-BRIEF.md"
 PROJECT_DOC_QUESTIONS_PATH = PROJECT_DOCS_DIR / "PROJECT-DOC-QUESTIONS.md"
 PROJECT_DOC_STATUS_PATH = PROJECT_DOCS_DIR / "PROJECT-DOC-STATUS.md"
@@ -96,7 +95,6 @@ def init_repo(
         project_name=repo.name,
         requirements_doc=_rel(repo, req_target),
         canonical_project_doc=_rel(repo, canonical_target),
-        user_project_doc=_rel(repo, repo / USER_PROJECT_INPUT_PATH) if (repo / USER_PROJECT_INPUT_PATH).exists() else None,
         file_map=build_file_map(repo),
         current_state=build_current_state(repo, scenario),
         design_seed=build_design_seed(scenario),
@@ -186,7 +184,6 @@ def plan_docs(
     repo: Path,
     scenario: str,
     requirements_doc: Path | None,
-    input_doc: Path | None,
     canonical_doc: Path | None,
     ai_docs_language: str,
     force: bool,
@@ -209,9 +206,6 @@ def plan_docs(
             created,
             skipped,
         )
-
-    if input_doc is not None:
-        _copy_if_needed(input_doc, repo / USER_PROJECT_INPUT_PATH, force, created, skipped)
 
     canonical_target = canonical_doc.resolve() if canonical_doc is not None else repo / CANONICAL_PROJECT_DOC_PATH
     canonical_content = build_canonical_project_doc(repo, scenario, req_target)
@@ -313,7 +307,7 @@ def validate_run_readiness(repo: Path) -> None:
     if not canonical_doc.exists():
         raise FileNotFoundError(
             "Canonical project document missing. This is the most important development foundation. "
-            "Provide your own project document and refine it first, or run `codex-loop plan-docs`."
+            "Run `codex-loop plan-docs` first and refine it with the user."
         )
     if not original_doc.exists():
         raise FileNotFoundError(
@@ -342,24 +336,17 @@ def set_workflow_state(repo: Path, stage: str, ai_docs_language: str) -> None:
         "ai_docs_language": ai_docs_language,
         "canonical_project_doc": str(CANONICAL_PROJECT_DOC_PATH).replace("\\", "/"),
         "original_requirements_doc": str(ORIGINAL_REQUIREMENTS_PATH).replace("\\", "/"),
-        "user_project_input_doc": str(USER_PROJECT_INPUT_PATH).replace("\\", "/"),
     }
     path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
 def build_canonical_project_doc(repo: Path, scenario: str, requirements_doc: Path) -> str:
-    user_input_note = (
-        f"- Optional user-provided project doc: `{USER_PROJECT_INPUT_PATH.as_posix()}`\n"
-        if (repo / USER_PROJECT_INPUT_PATH).exists()
-        else ""
-    )
     return (
         "# Canonical Project Document\n\n"
         "This file is the direct baseline for generating the relay documentation set and for autonomous execution.\n"
         "It must be refined with the user until there is no material ambiguity left.\n\n"
         "## Source Inputs\n\n"
         f"- Original user document: `{_rel(repo, requirements_doc)}`\n"
-        f"{user_input_note}"
         "## Completion Rule\n\n"
         "- Do not use this file as final truth until all important ambiguities have been resolved with the user.\n"
         "- During autonomous execution, the AI must still re-read the original user document at the start of every round.\n\n"
@@ -392,7 +379,7 @@ def build_project_doc_status(repo: Path, scenario: str) -> str:
         f"- Scenario: `{scenario}`\n"
         "- Current state: project-doc in refinement\n"
         "- Rule: do not generate the final relay docs or start autonomous development until the canonical project document is ambiguity-free.\n"
-        "- User guidance: if you already have project documentation, provide it first; it will be copied and then refined into the canonical project document.\n"
+        "- User guidance: provide the original requirements document and keep it as the permanent source of truth.\n"
     )
 
 
@@ -402,7 +389,7 @@ def build_plan_mode_prompt(repo: Path, scenario: str, canonical_doc: Path, ai_do
         "Use Codex Plan Mode to refine this repository into a complete, ambiguity-free project document before implementation.\n\n"
         f"- Scenario: `{scenario}`\n"
         f"- Target AI document language for the full workflow: `{ai_docs_language}`\n"
-        f"- Read the codebase, `{ORIGINAL_REQUIREMENTS_PATH.as_posix()}`, and `{USER_PROJECT_INPUT_PATH.as_posix()}` if present.\n"
+        f"- Read the codebase and `{ORIGINAL_REQUIREMENTS_PATH.as_posix()}`.\n"
         f"- Continuously question the user until `{_rel(repo, canonical_doc)}` is detailed enough to act as the canonical project document.\n"
         "- Do not start automatic development during this phase.\n"
         "- The project document is the most important development foundation.\n"
@@ -414,7 +401,7 @@ def _ensure_existing_code_ready(repo: Path, canonical_doc: Path) -> None:
         raise FileNotFoundError(
             "Canonical project document missing for existing-code workflow. "
             "This project document is the most important development foundation. "
-            "Either provide your own project document and refine it first, or run `codex-loop plan-docs --repo <path>` "
+            "Run `codex-loop plan-docs --repo <path>` "
             "before `codex-loop init existing-code`."
         )
     workflow_state = load_workflow_state(repo)

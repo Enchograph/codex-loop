@@ -93,10 +93,6 @@ def build_parser() -> argparse.ArgumentParser:
         help="Optional path to the user's original project or requirements document.",
     )
     plan_parser.add_argument(
-        "--input-doc",
-        help="Optional path to user-provided project documentation. It will be copied and then refined, not used directly as final truth.",
-    )
-    plan_parser.add_argument(
         "--canonical-doc",
         help=f"Optional canonical project document path. Defaults to {CANONICAL_PROJECT_DOC_PATH.as_posix()}.",
     )
@@ -186,13 +182,11 @@ def main(argv: list[str] | None = None) -> int:
         repo = Path(args.repo).resolve()
         scenario = detect_scenario(repo) if args.scenario == "auto" else args.scenario
         requirements_doc = Path(args.requirements_doc).resolve() if args.requirements_doc else None
-        input_doc = Path(args.input_doc).resolve() if args.input_doc else None
         canonical_doc = Path(args.canonical_doc).resolve() if args.canonical_doc else None
         result = plan_docs(
             repo=repo,
             scenario="existing-code" if scenario == "auto" else scenario,
             requirements_doc=requirements_doc,
-            input_doc=input_doc,
             canonical_doc=canonical_doc,
             ai_docs_language=args.ai_doc_language,
             force=args.force,
@@ -283,7 +277,6 @@ def _interactive_plan_docs_args() -> list[str]:
     repo = _prompt_text("Repository path", ".")
     scenario = _choose_option("Scenario", ["auto", "existing-code"], 0)
     requirements_doc = _prompt_text("Original user document path (optional)", "")
-    input_doc = _prompt_text("User-provided project document path (optional)", "")
     canonical_doc = _prompt_text("Canonical project document path (optional)", "")
     ai_doc_language = _choose_option("AI document language", sorted(SUPPORTED_AI_DOC_LANGUAGES.keys()), 0)
     force = _choose_bool("Overwrite generated files if they exist", False)
@@ -291,8 +284,6 @@ def _interactive_plan_docs_args() -> list[str]:
     args = ["plan-docs", scenario, "--repo", repo, "--ai-doc-language", ai_doc_language]
     if requirements_doc:
         args.extend(["--requirements-doc", requirements_doc])
-    if input_doc:
-        args.extend(["--input-doc", input_doc])
     if canonical_doc:
         args.extend(["--canonical-doc", canonical_doc])
     if force:

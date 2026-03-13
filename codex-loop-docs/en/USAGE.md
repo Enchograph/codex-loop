@@ -13,8 +13,8 @@ If the user runs `codex-loop` without extra arguments, or runs a subcommand with
 
 ## Canonical Project Document Rule
 
-- Users should provide their own project document whenever available.
-- A user-provided project document is only an input source.
+- The only user input document is the original requirements document.
+- It remains the permanent source of truth through the whole workflow.
 - The direct baseline for relay-doc generation and autonomous execution is the canonical project document.
 - During autonomous execution, the AI must still re-read the original user document at the start of every round.
 
@@ -26,15 +26,12 @@ Examples:
 
 ```bash
 codex-loop plan-docs --repo /path/to/repo --requirements-doc /path/to/original-user-doc.md
-codex-loop plan-docs --repo /path/to/repo --input-doc /path/to/existing-project-doc.md
-codex-loop plan-docs --repo /path/to/repo --requirements-doc /path/to/original-user-doc.md --input-doc /path/to/existing-project-doc.md
 codex-loop plan-docs --repo /path/to/repo --ai-doc-language zh-CN
 ```
 
 Behavior:
 
 - Copies the original user document into `codex-loop-docs/requirements/USER-REQUIREMENTS.md` when provided
-- Copies any user-provided project doc into `codex-loop-docs/project/USER-PROVIDED-PROJECT-DOC.md`
 - Generates `codex-loop-docs/project/PROJECT-BRIEF.md` as the canonical project doc scaffold
 - Generates planning guidance files for the Plan Mode clarification phase
 - Does not start implementation or autonomous execution

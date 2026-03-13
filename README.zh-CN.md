@@ -24,8 +24,6 @@ Codex Loop 是一份简单的脚本项目，旨在为 Codex 提供全自动循�
 python -m pip install -e .[dev]
 ```
 
-直接运行不带额外参数的 `codex-loop` 时，现在会进入交互式终端界面，让用户一步一步选择命令和参数选项。
-
 ### 基底项目需求文档生成（可选）
 
 
@@ -34,9 +32,8 @@ python -m pip install -e .[dev]
 ```bash
 PROJECT_DIR="/path/to/repo"
 ORIGINAL_USER_DOC="/path/to/original-user-doc.md"
-USER_PROJECT_DOC="/path/to/your-project-doc.md"
 
-codex-loop plan-docs --repo "$PROJECT_DIR" --requirements-doc "$ORIGINAL_USER_DOC" --input-doc "$USER_PROJECT_DOC"
+codex-loop plan-docs --repo "$PROJECT_DIR" --requirements-doc "$ORIGINAL_USER_DOC"
 ```
 
 ### 根据 用户基底项目需求文档 生成 AI 开发文档组
@@ -60,14 +57,13 @@ PROJECT_DIR="/path/to/repo"
 codex-loop init existing-code --repo "$PROJECT_DIR" --ai-doc-language zh-CN
 ```
 
-#### 已有项目，有 用户基底文档 提供
+#### 已有项目，有 用户原始需求文档 提供
 
 ```bash
 PROJECT_DIR="/path/to/repo"
 ORIGINAL_USER_DOC="/path/to/original-user-doc.md"
-USER_PROJECT_DOC="/path/to/your-project-doc.md"
 
-codex-loop plan-docs --repo "$PROJECT_DIR" --requirements-doc "$ORIGINAL_USER_DOC" --input-doc "$USER_PROJECT_DOC"
+codex-loop plan-docs --repo "$PROJECT_DIR" --requirements-doc "$ORIGINAL_USER_DOC"
 codex-loop init existing-code --repo "$PROJECT_DIR" --ai-doc-language zh-CN
 ```
 

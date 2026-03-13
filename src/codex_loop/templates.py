@@ -25,7 +25,6 @@ class TemplateContext:
     project_name: str
     requirements_doc: str
     canonical_project_doc: str
-    user_project_doc: str | None
     file_map: str
     current_state: str
     design_seed: str
@@ -229,7 +228,6 @@ def _render_en(filename: str, ctx: TemplateContext) -> str:
             - Primary workflow: `plan-docs` to refine the canonical project document, `init` to generate relay docs, and `run` to start the supervised Codex loop.
             - Original user document: `{ctx.requirements_doc}`
             - Canonical project document: `{ctx.canonical_project_doc}`
-            - User-provided project doc input: `{ctx.user_project_doc or 'None recorded'}`
             - AI document language: `{ctx.ai_docs_language}`
             - Scenario type: {scenario_name}
             - Default rule: Re-read the original user document at the start of every round.
@@ -475,7 +473,6 @@ def _render_zh(filename: str, ctx: TemplateContext) -> str:
             - 主工作流：先用 `plan-docs` 打磨 canonical 项目文档，再用 `init` 生成正式文档组，最后用 `run` 启动 supervised Codex loop。
             - 用户原始文档：`{ctx.requirements_doc}`
             - Canonical 项目文档：`{ctx.canonical_project_doc}`
-            - 用户提供的项目文档输入：`{ctx.user_project_doc or '未记录'}`
             - AI 文档语言：`{ctx.ai_docs_language}`
             - 场景类型：{scenario_name}
             - 默认规则：每轮开始前必须重读用户原始文档。

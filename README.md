@@ -33,9 +33,8 @@ Prepare the base project document for an existing-code repository:
 ```bash
 PROJECT_DIR="/path/to/repo"
 ORIGINAL_USER_DOC="/path/to/original-user-doc.md"
-USER_PROJECT_DOC="/path/to/your-project-doc.md"
 
-codex-loop plan-docs --repo "$PROJECT_DIR" --requirements-doc "$ORIGINAL_USER_DOC" --input-doc "$USER_PROJECT_DOC"
+codex-loop plan-docs --repo "$PROJECT_DIR" --requirements-doc "$ORIGINAL_USER_DOC"
 ```
 
 ### Generate the AI Development Documentation Set from the User's Base Project Requirements Document
@@ -66,14 +65,13 @@ PROJECT_DIR="/path/to/repo"
 codex-loop init existing-code --repo "$PROJECT_DIR" --ai-doc-language zh-CN
 ```
 
-#### Existing project, with a user-provided base document
+#### Existing project, with an original requirements document
 
 ```bash
 PROJECT_DIR="/path/to/repo"
 ORIGINAL_USER_DOC="/path/to/original-user-doc.md"
-USER_PROJECT_DOC="/path/to/your-project-doc.md"
 
-codex-loop plan-docs --repo "$PROJECT_DIR" --requirements-doc "$ORIGINAL_USER_DOC" --input-doc "$USER_PROJECT_DOC"
+codex-loop plan-docs --repo "$PROJECT_DIR" --requirements-doc "$ORIGINAL_USER_DOC"
 codex-loop init existing-code --repo "$PROJECT_DIR" --ai-doc-language zh-CN
 ```
 
