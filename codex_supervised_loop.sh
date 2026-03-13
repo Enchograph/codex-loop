@@ -27,7 +27,7 @@ json_get_string() {
 
 json_get_bool() {
   local key="$1"
-  jq -er "$key | if type == \"boolean\" then . else error(\"expected boolean\") end" <<<"$CONFIG_JSON"
+  jq -r "$key | if type == \"boolean\" then . else error(\"expected boolean\") end" <<<"$CONFIG_JSON"
 }
 
 json_get_number() {
