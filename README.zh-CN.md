@@ -2,7 +2,7 @@
 
 <p align="center">中文 | <a href="./README.md">English</a></p>
 
-Codex Loop 是一个简单的命令行项目，用于执行 Codex 的全自动循环接力开发。
+Codex Loop 是一个 Python CLI 项目，用于执行 Codex 的全自动循环接力开发。
 
 项目分为三个部分：
 
@@ -10,7 +10,7 @@ Codex Loop 是一个简单的命令行项目，用于执行 Codex 的全自动�
 2. 基于「基底需求文档」生成文档组，为 Codex 会话提供多轮接力无缝开发能力。
 3. 基于该文档组运行无人值守的 `codex exec` 全自动循环开发。
 
-您如果只需要适用于 Codex 的自动循环脚本，参阅 `codex-loop-minimal/`即可。
+您如果只需要适用于 Codex 的自动循环脚本，参阅 `codex-loop-minimal/`即可，或者直接执行`codex-loop run`选择 `Use loop script only`。
 
 项目要求 Python 3.11+，支持 Windows、macOS、Linux。
 

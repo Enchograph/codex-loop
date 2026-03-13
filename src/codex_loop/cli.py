@@ -3,16 +3,18 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from json import JSONDecodeError
 from pathlib import Path
 
 from codex_loop.codex import launch_interactive_codex
 from codex_loop.i18n import get_messages, resolve_language
 from codex_loop.interactive import choose_option, prompt_bool, prompt_text
+from codex_loop.models import RuntimeConfig
 from codex_loop.runtime import LoopRunner, load_config
 from codex_loop.scaffold import (
     CANONICAL_PROJECT_DOC_PATH,
     CODEX_LOOP_CONFIG_DIR,
-    CODEX_LOOP_DIR,
+    CODEX_LOOP_LOG_DIR,
     USER_REQUIREMENTS_PATH,
     detect_scenario,
     generate_init_prompt,
@@ -20,6 +22,7 @@ from codex_loop.scaffold import (
     init_repo,
     inspect_repo,
     plan_docs,
+    runtime_config_to_dict,
     validate_run_readiness,
 )
 
@@ -136,7 +139,8 @@ def main(argv: list[str] | None = None) -> int:
         print(json.dumps(_scaffold_payload(repo, result), indent=2, ensure_ascii=False))
         return exit_code
 
-    config = load_config(Path(args.config).resolve())
+    config_path = Path(args.config).resolve()
+    config = _load_or_create_run_config(config_path, cli_language)
     if args.sandbox_mode is not None:
         config.sandbox_mode = args.sandbox_mode
     if args.approval_policy is not None:
@@ -145,8 +149,23 @@ def main(argv: list[str] | None = None) -> int:
         config.search_enabled = args.search_enabled
     if args.skip_git_repo_check is not None:
         config.skip_git_repo_check = args.skip_git_repo_check
-    validate_run_readiness(config.workdir)
-    return LoopRunner(config).run()
+    if config.run_mode == "relay-docs":
+        try:
+            validate_run_readiness(config.workdir)
+        except FileNotFoundError as exc:
+            print(exc)
+            config = _interactive_run_config_setup(config_path, cli_language, reason="Relay-docs mode requires the generated docs. Choose how you want to run.")
+            if config.run_mode == "relay-docs":
+                try:
+                    validate_run_readiness(config.workdir)
+                except FileNotFoundError as retry_exc:
+                    print(retry_exc)
+                    return 1
+    try:
+        return LoopRunner(config).run()
+    except FileNotFoundError as exc:
+        print(exc)
+        return 1
 
 
 def _add_repo_args(parser: argparse.ArgumentParser) -> None:
@@ -239,3 +258,71 @@ def _expand_interactive_argv(argv: list[str] | None) -> list[str]:
     elif git_override == "require":
         args.append("--no-skip-git-repo-check")
     return args
+
+
+def _load_or_create_run_config(config_path: Path, cli_language: str) -> RuntimeConfig:
+    try:
+        return load_config(config_path)
+    except (FileNotFoundError, JSONDecodeError, KeyError, TypeError, ValueError) as exc:
+        print(f"Run config unavailable or invalid: {exc}")
+        return _interactive_run_config_setup(config_path, cli_language)
+
+
+def _interactive_run_config_setup(config_path: Path, cli_language: str, reason: str | None = None) -> RuntimeConfig:
+    repo = Path.cwd().resolve()
+    if reason:
+        print(reason)
+    print(f"Generating run config: {config_path}")
+    mode_label = choose_option(
+        "Run mode",
+        _run_mode_options(cli_language),
+        default_index=0,
+        language=cli_language,
+    )
+    run_mode = "relay-docs" if mode_label == _run_mode_options(cli_language)[0] else "loop-script"
+    prompt = _default_run_prompt(cli_language) if run_mode == "relay-docs" else _prompt_required_text(_loop_prompt_label(cli_language))
+
+    config = RuntimeConfig(
+        codex_bin="codex",
+        workdir=repo,
+        prompt=prompt,
+        total_timeout_minutes=300,
+        run_mode=run_mode,
+        log_dir=repo / CODEX_LOOP_LOG_DIR,
+        skip_git_repo_check=False,
+        sandbox_mode="workspace-write",
+        approval_policy="on-request",
+        search_enabled=True,
+        profile=None,
+        model=None,
+    )
+    config_path.parent.mkdir(parents=True, exist_ok=True)
+    config_path.write_text(json.dumps(runtime_config_to_dict(config), indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    print(f"Generated run config at {config_path}")
+    return config
+
+
+def _default_run_prompt(cli_language: str) -> str:
+    if cli_language == "zh-CN":
+        return "阅读 .codex-loop/docs/AI-MASTER-PROMPT.md，严格按照其要求接手之前的成果继续完整开发。"
+    return "Read .codex-loop/docs/AI-MASTER-PROMPT.md and continue the project strictly according to its instructions."
+
+
+def _run_mode_options(cli_language: str) -> list[str]:
+    if cli_language == "zh-CN":
+        return ["按文档接力流程运行", "只使用自动循环脚本"]
+    return ["Use relay-docs workflow", "Use loop script only"]
+
+
+def _loop_prompt_label(cli_language: str) -> str:
+    if cli_language == "zh-CN":
+        return "循环提示词"
+    return "Loop prompt"
+
+
+def _prompt_required_text(prompt: str) -> str:
+    while True:
+        raw = prompt_text(prompt, "")
+        if raw.strip():
+            return raw.strip()
+        print("Enter a non-empty value.")

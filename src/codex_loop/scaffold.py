@@ -167,6 +167,7 @@ Requirements:
 
 def runtime_config_to_dict(config: RuntimeConfig) -> dict[str, object]:
     payload: dict[str, object] = {
+        "run_mode": config.run_mode,
         "codex_bin": config.codex_bin,
         "workdir": str(config.workdir),
         "prompt": config.prompt,

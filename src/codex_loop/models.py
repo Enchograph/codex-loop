@@ -6,6 +6,7 @@ from pathlib import Path
 
 SUPPORTED_SANDBOX_MODES = {"read-only", "workspace-write", "danger-full-access"}
 SUPPORTED_APPROVAL_POLICIES = {"untrusted", "on-request", "never"}
+SUPPORTED_RUN_MODES = {"relay-docs", "loop-script"}
 
 
 @dataclass
@@ -14,6 +15,7 @@ class RuntimeConfig:
     workdir: Path
     prompt: str
     total_timeout_minutes: int
+    run_mode: str = "relay-docs"
     log_dir: Path | None = None
     skip_git_repo_check: bool = False
     sandbox_mode: str = "workspace-write"

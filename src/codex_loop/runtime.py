@@ -7,7 +7,7 @@ import time
 from pathlib import Path
 
 from codex_loop.codex import build_exec_command
-from codex_loop.models import RuntimeConfig, SUPPORTED_APPROVAL_POLICIES, SUPPORTED_SANDBOX_MODES
+from codex_loop.models import RuntimeConfig, SUPPORTED_APPROVAL_POLICIES, SUPPORTED_RUN_MODES, SUPPORTED_SANDBOX_MODES
 
 
 def load_config(path: Path) -> RuntimeConfig:
@@ -17,6 +17,7 @@ def load_config(path: Path) -> RuntimeConfig:
         workdir=Path(payload["workdir"]).resolve(),
         prompt=payload["prompt"],
         total_timeout_minutes=int(payload.get("total_timeout_minutes", 300)),
+        run_mode=payload.get("run_mode", "relay-docs"),
         log_dir=Path(payload["log_dir"]).resolve() if payload.get("log_dir") else None,
         skip_git_repo_check=bool(payload.get("skip_git_repo_check", False)),
         sandbox_mode=payload.get("sandbox_mode", "workspace-write"),
@@ -31,6 +32,8 @@ def load_config(path: Path) -> RuntimeConfig:
 
 
 def validate_runtime_config(config: RuntimeConfig) -> None:
+    if config.run_mode not in SUPPORTED_RUN_MODES:
+        raise ValueError(f"Unsupported run mode: {config.run_mode}")
     if config.sandbox_mode not in SUPPORTED_SANDBOX_MODES:
         raise ValueError(f"Unsupported sandbox mode: {config.sandbox_mode}")
     if config.approval_policy not in SUPPORTED_APPROVAL_POLICIES:
