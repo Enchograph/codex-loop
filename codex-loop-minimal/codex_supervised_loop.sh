@@ -125,7 +125,8 @@ case "$APPROVAL_POLICY" in
       CODEX_ARGS+=(--sandbox "$SANDBOX_MODE")
     fi
     ;;
-  on-request|untrusted)
+  on-failure|on-request|untrusted)
+    CODEX_ARGS+=(--ask-for-approval "$APPROVAL_POLICY")
     CODEX_ARGS+=(--sandbox "$SANDBOX_MODE")
     ;;
   *)
@@ -135,7 +136,7 @@ case "$APPROVAL_POLICY" in
 esac
 CODEX_ARGS+=(--cd "$WORKDIR")
 if [[ "$SEARCH_ENABLED" == "true" ]]; then
-  CODEX_ARGS+=(--enable web_search)
+  CODEX_ARGS+=(--search)
 fi
 if [[ "$PROFILE_RAW" != "null" ]]; then
   CODEX_ARGS+=(--profile "$(json_get_string '.profile')")

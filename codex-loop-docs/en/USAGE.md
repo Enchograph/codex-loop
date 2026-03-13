@@ -9,6 +9,7 @@ Codex Loop is intentionally split into explicit gated stages:
 3. `run`: start the supervised Codex loop after the docs are ready.
 
 Users can choose which language is fed to AI through the full workflow with `--ai-doc-language en` or `--ai-doc-language zh-CN`.
+If the user runs `codex-loop` without extra arguments, or runs a subcommand without any extra flags, the CLI opens an interactive terminal UI to collect the needed options.
 
 ## Canonical Project Document Rule
 

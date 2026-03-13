@@ -9,6 +9,7 @@ Codex Loop 刻意拆成带门禁的几个阶段：
 3. `run`：在文档准备好之后启动 supervised Codex loop。
 
 用户可以通过 `--ai-doc-language en` 或 `--ai-doc-language zh-CN` 选择全过程喂给 AI 的文档语言。
+如果用户直接运行不带额外参数的 `codex-loop`，或者只输入子命令但不带其他参数，CLI 会进入交互式终端界面来收集所需选项。
 
 ## Canonical 项目文档规则
 

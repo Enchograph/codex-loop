@@ -4,6 +4,7 @@ import json
 import shutil
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from codex_loop.cli import main
 from codex_loop.scaffold import CANONICAL_PROJECT_DOC_PATH, EN_DOCS_DIR, detect_scenario
@@ -20,6 +21,18 @@ def workspace_temp_dir(name: str) -> Path:
 
 
 class InitTests(unittest.TestCase):
+    def test_bare_command_uses_interactive_menu(self) -> None:
+        with patch(
+            "builtins.input",
+            side_effect=[
+                "4",  # root menu -> inspect
+                ".",  # repo path
+            ],
+        ):
+            exit_code = main([])
+
+        self.assertEqual(exit_code, 0)
+
     def test_detect_blank_repo(self) -> None:
         tmp_path = workspace_temp_dir("init-detect-blank")
         self.addCleanup(shutil.rmtree, tmp_path, True)

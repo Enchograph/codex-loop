@@ -24,13 +24,18 @@ The project supports systems such as Windows, macOS, and Linux, and requires Pyt
 python -m pip install -e .[dev]
 ```
 
+Running `codex-loop` with no additional arguments now opens an interactive terminal UI so the user can choose the command and its parameter options step by step.
+
 ### Base Project Requirements Document Generation (Optional)
 
 Prepare the base project document for an existing-code repository:
 
 ```bash
-codex-loop plan-docs --repo /path/to/repo --requirements-doc /path/to/original-user-doc.md --input-doc /path/to/your-project-doc.md
-codex-loop plan-docs --repo /path/to/repo --ai-doc-language zh-CN
+PROJECT_DIR="/path/to/repo"
+ORIGINAL_USER_DOC="/path/to/original-user-doc.md"
+USER_PROJECT_DOC="/path/to/your-project-doc.md"
+
+codex-loop plan-docs --repo "$PROJECT_DIR" --requirements-doc "$ORIGINAL_USER_DOC" --input-doc "$USER_PROJECT_DOC"
 ```
 
 ### Generate the AI Development Documentation Set from the User's Base Project Requirements Document
@@ -38,33 +43,55 @@ codex-loop plan-docs --repo /path/to/repo --ai-doc-language zh-CN
 #### Empty project, with a user-provided base document
 
 ```bash
-codex-loop init blank --repo /path/to/repo --requirements-doc /path/to/requirements.md
+PROJECT_DIR="/path/to/repo"
+BASE_REQUIREMENTS_DOC="/path/to/requirements.md"
+
+codex-loop init blank --repo "$PROJECT_DIR" --requirements-doc "$BASE_REQUIREMENTS_DOC"
 ```
 
 #### Existing project, without a user-provided base document
 
 ```bash
+PROJECT_DIR="/path/to/repo"
+ORIGINAL_USER_DOC="/path/to/original-user-doc.md"
+
+codex-loop plan-docs --repo "$PROJECT_DIR" --requirements-doc "$ORIGINAL_USER_DOC"
 ```
 
 After generating the user base project requirements document through the previous step, generate the AI development documentation set based on that document.
 
 ```bash
-codex-loop init existing-code --repo /path/to/repo --ai-doc-language zh-CN
+PROJECT_DIR="/path/to/repo"
+
+codex-loop init existing-code --repo "$PROJECT_DIR" --ai-doc-language zh-CN
 ```
 
 #### Existing project, with a user-provided base document
 
 ```bash
+PROJECT_DIR="/path/to/repo"
+ORIGINAL_USER_DOC="/path/to/original-user-doc.md"
+USER_PROJECT_DOC="/path/to/your-project-doc.md"
+
+codex-loop plan-docs --repo "$PROJECT_DIR" --requirements-doc "$ORIGINAL_USER_DOC" --input-doc "$USER_PROJECT_DOC"
+codex-loop init existing-code --repo "$PROJECT_DIR" --ai-doc-language zh-CN
 ```
 
 ### Start the Codex Automation Script
 
-Start the Codex auto loop after the documentation set is ready:
+Start the Codex auto loop after the documentation set is ready, and **pay attention to the permission settings you grant to Codex**.
+
+> The recommended approach is to give Codex non-interrupting permissions inside an empty virtual machine if you want fully unattended automatic development.
 
 ```bash
-codex-loop run --config /path/to/repo/codex-loop.json
-codex-loop run --config /path/to/repo/codex-loop.json --sandbox-mode danger-full-access --approval-policy never
+PROJECT_DIR="/path/to/repo"
+CONFIG_PATH="$PROJECT_DIR/codex-loop.json"
+
+codex-loop run --config "$CONFIG_PATH"
+codex-loop run --config "$CONFIG_PATH" --sandbox-mode danger-full-access --approval-policy never
 ```
+
+If you only want the fixed-prompt automatic Codex conversation loop, see the `/codex-loop-minimal` folder.
 
 ## Project Docs
 

@@ -6,6 +6,7 @@ import sys
 import shutil
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from codex_loop.cli import main
 from codex_loop.loop import LoopConfig, LoopRunner
@@ -29,6 +30,12 @@ raise SystemExit(0)
 
 
 class RunTests(unittest.TestCase):
+    def test_inspect_subcommand_without_args_uses_interactive_menu(self) -> None:
+        with patch("builtins.input", side_effect=["."]):
+            exit_code = main(["inspect"])
+
+        self.assertEqual(exit_code, 0)
+
     def test_build_command_uses_search_and_on_failure(self) -> None:
         tmp_path = Path.cwd() / ".tmp-tests" / "build-command"
         if tmp_path.exists():
