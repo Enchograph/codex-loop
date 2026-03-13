@@ -15,7 +15,7 @@ require_cmd() {
 
 json_get_raw() {
   local key="$1"
-  jq -er "$key" <<<"$CONFIG_JSON"
+  jq -r "$key" <<<"$CONFIG_JSON"
 }
 
 json_get_string() {
@@ -93,7 +93,7 @@ TOTAL_TIMEOUT_SECONDS="$((TOTAL_TIMEOUT_MINUTES * 60))"
 
 mkdir -p "$LOG_DIR"
 
-mapfile -t EXTRA_ARGS < <(jq -er '.extra_args[]? | strings' <<<"$CONFIG_JSON")
+mapfile -t EXTRA_ARGS < <(jq -r '.extra_args[]? | strings' <<<"$CONFIG_JSON")
 
 CODEX_ARGS=()
 if [[ "$SKIP_GIT_REPO_CHECK" == "true" ]]; then
